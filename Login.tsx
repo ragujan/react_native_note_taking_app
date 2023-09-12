@@ -16,38 +16,19 @@ import {
 } from "react-native";
 
 function Login() {
-  const [selected, setSelected] = React.useState("");
   const [contact, setContact] = React.useState("");
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [userType, setUserType] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const [imageHiddenStatus, setImageHiddenStatus] = useState(false);
-  const [resetSelection, setResetSelection] = useState(0);
-  let textInput = useRef();
-  const data = [
-    { key: "1", value: "Student" },
-    { key: "2", value: "Employee" },
-    { key: "3", value: "Teacher" },
-    { key: "4", value: "Librarian" },
-  ];
-  const defaultSelection = {
-    key: "1",
-    value: "Student",
-  };
-  const clearSelection = () => {
-    setResetSelection(resetSelection + 1);
-  };
-  const doSignUp = () => {
-    const ip = "192.168.56.1";
-    let url = `http://${ip}:80/react_native_backend/test.php`;
 
-    url = "https://ragjn.000webhostapp.com/test.php";
-    console.log("hey hey");
+  const doSignIn = () => {
+    const ip = "192.168.56.1";
+    let url = `http://${ip}:80/react_native_backend/login.php`;
+
+    url = "https://ragjn.000webhostapp.com/signin.php";
     const formData = new FormData();
     formData.append("contact", contact);
-    formData.append("first_name", firstName);
-    formData.append("last_name", lastName);
-    formData.append("user_type", userType);
+    formData.append("password", password);
+    Alert.alert("Contact is ",contact)
     fetch(url, {
       method: "POST",
       body: formData,
@@ -55,19 +36,11 @@ function Login() {
       .then((res) => res.text())
       .then((text) => {
         console.log("text is ", text);
-        if (text === "New user added successfully") {
-          setContact("");
-          setFirstName("");
-          setLastName("");
-          setUserType("");
-          clearSelection();
-        }
-        // Alert.alert("Text is ", text);
+        setContact("");
+        setPassword("");
       });
   };
-  useEffect(() => {
-    // Alert.alert("image status changed ",JSON.stringify(imageHiddenStatus))
-  }, [imageHiddenStatus]);
+
   return (
     <>
       <KeyboardAvoidingView
@@ -75,20 +48,12 @@ function Login() {
       >
         <View style={style.container}>
           <Image
-            style={imageHiddenStatus ? style.image : style.image}
+            style={style.image}
             source={require("./assets/images/login.png")}
           />
-          <View
-            style={imageHiddenStatus ? style.topped : style.contentContainer}
-          >
-            <View
-              style={
-                imageHiddenStatus
-                  ? style.headerContainerTopped
-                  : style.headerContainer
-              }
-            >
-              <Text style={style.textHeader}>Sign Up</Text>
+          <View style={style.contentContainer}>
+            <View style={style.headerContainer}>
+              <Text style={style.textHeader}>Sign In</Text>
             </View>
             <View style={style.formContainer}>
               <View style={style.textInputPair}>
@@ -103,48 +68,31 @@ function Login() {
                   value={contact}
                 />
               </View>
+
               <View style={style.textInputPair}>
-                <Text style={style.textLabel}>First Name</Text>
+                <Text style={style.textLabel}>Password</Text>
                 <TextInput
                   onChangeText={(value) => {
-                    setFirstName(value);
+                    setPassword(value);
                   }}
                   style={style.textInput}
-                  value={firstName}
+                  value={password}
                 />
               </View>
-              <View style={style.textInputPair}>
-                <Text style={style.textLabel}>Last Name</Text>
-                <TextInput
-                  onChangeText={(value) => {
-                    setLastName(value);
-                  }}
-                  onBlur={() => {
-                    setImageHiddenStatus(false);
-                  }}
-                  onFocus={() => {
-                    setImageHiddenStatus(true);
-                  }}
-                  style={style.textInput}
-                  value={lastName}
-                />
-              </View>
-
-
 
               <View style={style.textInputPair}>
                 <Pressable
                   style={style.btnContainer}
                   onPress={() => {
-                    doSignUp();
+                    doSignIn();
                   }}
                 >
-                  <Text style={style.btnText}>Sign Up</Text>
+                  <Text style={style.btnText}>Log In</Text>
                 </Pressable>
               </View>
               <View style={style.textInputPair}>
                 <Pressable onPress={() => {}}>
-                  <Text style={style.loginLabel}>Login</Text>
+                  <Text style={style.loginLabel}>Sign Up</Text>
                 </Pressable>
               </View>
             </View>

@@ -3,6 +3,7 @@ import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 // import DropDownPicker from "react-native-dropdown-picker";
 import SignUp from "./SignUp";
 import { useState } from "react";
+import Login from "./Login";
 
 export default function App() {
   const [open, setOpen] = useState(false);
@@ -15,7 +16,8 @@ export default function App() {
   return (
     <SafeAreaView >
       <StatusBar hidden={true} />
-      <SignUp/>
+      {/* <SignUp/> */}
+      <Login/>
       {/* <View >
         <Text>Open up App.tsx to start working on your app! 333</Text>
       
