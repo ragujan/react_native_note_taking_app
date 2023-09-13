@@ -16,7 +16,7 @@ import {
   Pressable,
 } from "react-native";
 
-const SignUp = ({navigation}) => {
+const AddNotes = ({navigation}) => {
   const [selected, setSelected] = React.useState("");
   const [contact, setContact] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
@@ -96,7 +96,7 @@ const SignUp = ({navigation}) => {
                     : style.headerContainer
                 }
               >
-                <Text style={style.textHeader}>Sign Up</Text>
+                <Text style={style.textHeader}>Add Notes</Text>
               </View>
               <View style={style.formContainer}>
                 <View style={style.textInputPair}>
@@ -186,7 +186,7 @@ const SignUp = ({navigation}) => {
     </>
   );
 };
-export default SignUp;
+export default AddNotes;
 
 const style = StyleSheet.create({
   image: {

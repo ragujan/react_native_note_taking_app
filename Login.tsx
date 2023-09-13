@@ -15,7 +15,7 @@ import {
   Pressable,
 } from "react-native";
 
-function Login() {
+function Login({ navigation }) {
   const [contact, setContact] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [imageHiddenStatus, setImageHiddenStatus] = useState(false);
@@ -28,19 +28,34 @@ function Login() {
     const formData = new FormData();
     formData.append("contact", contact);
     formData.append("password", password);
-    Alert.alert("Contact is ",contact)
+
     fetch(url, {
       method: "POST",
       body: formData,
     })
-      .then((res) => res.text())
-      .then((text) => {
-        console.log("text is ", text);
-        setContact("");
-        setPassword("");
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json);
+        if (json[0] === "user does exists") {
+          const user_contact = json[1][0];
+          const user_first_name = json[1][1];
+          const user_last_name = json[1][2];
+          const obj = {
+            contact: user_contact,
+            fname: user_first_name,
+            lname: user_last_name,
+          };
+          navigation.navigate("Home", obj);
+        }
       });
   };
-
+  const goToSignUp = () => {
+    navigation.navigate("SignUp");
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Home" }],
+    });
+  };
   return (
     <>
       <KeyboardAvoidingView
@@ -92,7 +107,9 @@ function Login() {
               </View>
               <View style={style.textInputPair}>
                 <Pressable onPress={() => {}}>
-                  <Text style={style.loginLabel}>Sign Up</Text>
+                  <Text onPress={goToSignUp} style={style.loginLabel}>
+                    Sign Up
+                  </Text>
                 </Pressable>
               </View>
             </View>
@@ -222,5 +239,6 @@ const style = StyleSheet.create({
   loginLabel: {
     textDecorationLine: "underline",
     color: "blue",
+    fontSize: 19,
   },
 });

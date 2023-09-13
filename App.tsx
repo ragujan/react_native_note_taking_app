@@ -4,33 +4,24 @@ import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import SignUp from "./SignUp";
 import { useState } from "react";
 import Login from "./Login";
+import { NavigationContainer } from "@react-navigation/native";
 
+import { createStackNavigator } from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Home from "./Home";
+const Stack = createNativeStackNavigator();
 export default function App() {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    { label: "Apple", value: "apple" },
-    { label: "Banana", value: "banana" },
-  ]);
-
   return (
-    <SafeAreaView >
-      <StatusBar hidden={true} />
-      {/* <SignUp/> */}
-      <Login/>
-      {/* <View >
-        <Text>Open up App.tsx to start working on your app! 333</Text>
-      
-      </View> */}
-      {/* <DropDownPicker
-        open={open}
-        value={value}
-        items={items}
-        setOpen={setOpen}
-        setValue={setValue}
-        setItems={setItems}
-      /> */}
-    </SafeAreaView>
+
+
+      <NavigationContainer>
+        <Stack.Navigator>
+            <Stack.Screen options={{headerShown:false}} name="SignUp" component={SignUp}/>
+            <Stack.Screen options={{headerShown:false,headerBackVisible:false}} name="Login" component={Login} />
+            <Stack.Screen options={{headerShown:false,headerBackVisible:false,headerBackTitleVisible:false}} name="Home" component={Home} />
+        </Stack.Navigator>
+      </NavigationContainer>
+
   );
 }
 
