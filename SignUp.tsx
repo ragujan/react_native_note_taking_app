@@ -44,7 +44,21 @@ const SignUp = ({navigation}) => {
     let url = `http://${ip}:80/react_native_backend/test.php`;
 
     url = "https://ragjn.000webhostapp.com/test.php";
-  
+
+    if(contact === ""|| firstName==="" || lastName===""|| password===""){
+       return;
+    }
+    const regex = /^(?:0|94|\+94)(?:(77|78|76|71|74|72|07|073|)(0|2|3|4|5|7|9)|7(0|1|2|4|5|6|7|8)\d)\d{6}$/
+    if(!regex.exec(contact)){
+      Alert.alert("Invalid contact Number")
+      return;
+    }
+    const passwordRegex = /^(?=.*\d)(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{7,}$/;
+    if(!passwordRegex.exec(password)){
+      Alert.alert("Password must contain number, special Character, UpperCase and lowercase, atleast 8 characters")
+      return;
+    }
+
     const formData = new FormData();
     formData.append("contact", contact);
     formData.append("first_name", firstName);

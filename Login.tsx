@@ -21,6 +21,8 @@ function Login({ navigation }) {
   const [imageHiddenStatus, setImageHiddenStatus] = useState(false);
 
   const doSignIn = () => {
+
+
     const ip = "192.168.56.1";
     let url = `http://${ip}:80/react_native_backend/login.php`;
 
@@ -29,6 +31,16 @@ function Login({ navigation }) {
     formData.append("contact", contact);
     formData.append("password", password);
 
+    // const regex = /^(?:0|94|\+94)(?:(77|78|76|71|74|72|07|073|)(0|2|3|4|5|7|9)|7(0|1|2|4|5|6|7|8)\d)\d{6}$/
+    // if(!regex.exec(contact)){
+    //   Alert.alert("Invalid contact Number")
+    //   return;
+    // }
+    // const passwordRegex = /^(?=.*\d)(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{7,}$/;
+    // if(!passwordRegex.exec(password)){
+    //   Alert.alert("Password must contain number, special Character, UpperCase and lowercase, atleast 8 characters")
+    //   return;
+    // }
     fetch(url, {
       method: "POST",
       body: formData,
@@ -46,15 +58,15 @@ function Login({ navigation }) {
             lname: user_last_name,
           };
           navigation.navigate("Home", obj);
+          // navigation.reset({
+          //   index: 0,
+          //   routes: [{ name: "Home" }],
+          // });
         }
       });
   };
   const goToSignUp = () => {
     navigation.navigate("SignUp");
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Home" }],
-    });
   };
   return (
     <>

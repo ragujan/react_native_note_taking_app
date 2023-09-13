@@ -32,27 +32,27 @@ const NoteItems = ({ title, description, category }: ItemProps) => (
   </View>
 );
 
-function Home({ navigation, route }) {
+function Home2({ navigation, route }) {
   const [notes, setNotes] = React.useState([]);
 
   const [count, setCount] = React.useState(20);
+  const viewNotes = async () => {
+    // const lastUserContact = await getAllData();
+    // console.log("last user contact is from last ", lastUserContact["contact"]);
+    let existingNotes = await getExistingNotes();
+    if (existingNotes === null) {
+        console.log("nothing to show")
+    } else {
+      console.log("existing notes are ", existingNotes);
+      setNotes(existingNotes);
+    }
+    return await getExistingNotes();
+  };
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
-      await viewNotes();
-      const existingNotes = await getAllData();
-      if (existingNotes.length != 0) {
-        // const lastUserContact =
-        //   existingNotes[existingNotes.length - 1]["contact"];
-        // if (lastUserContact != route.params.contact) {
-        //   await AsyncStorage.setItem(
-        //     "my-notes",
-        //     `{'contact':${route.params.contact}}`
-        //   );
-        // }
-      } else {
-        console.log("length is  zero");
-      }
+        await viewNotes();
+      //   const lastUserContact = await getAllData();
       //   console.log(
       //     "last user contact is from last from effect loaded",
       //     lastUserContact["contact"]
@@ -73,50 +73,35 @@ function Home({ navigation, route }) {
       "hardwareBackPress",
       backAction
     );
+
     return () => backHandler.remove();
   }, []);
-
-  const viewNotes = async () => {
-    return;
-    let existingNotes = await getExistingNotes();
-    if (existingNotes === null) {
-      //   console.log("nothing to show");
-    } else {
-      //   console.log("existing notes are ", existingNotes);
-      setNotes(existingNotes);
-    }
-    // return await getExistingNotes();
-  };
   const getAllData = async () => {
-    const notes = await AsyncStorage.getItem("my-notes");
-
-    // console.log("notes are ", notes);
-
-    let jsonNote = JSON.parse(notes);
-    if (notes != null) {
-      //   jsonNote.pop();
-      //   const lastItem = jsonNote[jsonNote.length - 1];
-      //   console.log("last item is of json ", lastItem);
-      //   jsonNote.pop();
+    const notesString = await AsyncStorage.getItem("my-notes");
+    if (notesString === "") {
+      console.log("bro bro");
+      return [`contact:${route.params.contact}`];
+    } else {
+      console.log("here it's not zero");
+      const notes = JSON.parse(notesString);
+      console.log("notes nots ", notes);
+      console.log(notes[notes.length - 1]);
+      return notes[notes.length - 1];
     }
-    // console.log("jsonnote is ", jsonNote);
-    return notes ? jsonNote : [];
   };
   const getExistingNotes = async () => {
     const notes = await AsyncStorage.getItem("my-notes");
 
-    // console.log("notes are ", notes);
-
-    let jsonNote = JSON.parse(notes);
+    console.log("notes are ",notes);
+  
     if (notes != null) {
-      jsonNote.pop();
-      //   const lastItem = jsonNote[jsonNote.length - 1];
-      //   console.log("last item is of json ", lastItem);
-      //   jsonNote.pop();
+    //   jsonNote = JSON.parse(notes);
+    //   const lastItem = jsonNote[jsonNote.length - 1];
+    //   console.log("last item is of json ", lastItem);
+    //   jsonNote.pop();
     }
     // console.log("jsonnote is ", jsonNote);
-    return notes ? jsonNote : [];
-    // return notes ? JSON.parse(notes) : [];
+    return notes ? JSON.parse(notes) : [];
   };
 
   const createObject = () => {
@@ -166,17 +151,16 @@ function Home({ navigation, route }) {
               <Text style={style.btnText}>View Notes</Text>
             </Pressable>
           </View>
-          <View style={style.addNoteButtonContainer}>
+          {/* <View style={style.addNoteButtonContainer}>
             <Pressable
               style={style.addNoteButton}
               onPress={async () => {
                 await AsyncStorage.setItem("my-notes", "");
-                await viewNotes();
               }}
             >
               <Text style={style.btnText}>Clear Notes</Text>
             </Pressable>
-          </View>
+          </View> */}
         </View>
       </>
     );
@@ -201,7 +185,7 @@ function Home({ navigation, route }) {
   );
 }
 
-export default Home;
+export default Home2;
 const style = StyleSheet.create({
   container: {
     flex: 1,
