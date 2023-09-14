@@ -51,7 +51,7 @@ const SignUp = ({navigation}:Props) => {
   };
   const doSignUp = () => {
     const ip = "192.168.56.1";
-    let url = `http://${ip}:80/react_native_backend/test.php`;
+    let url = `http://${ip}:80/react_native_backend/signup.php`;
 
     url = "https://ragjn.000webhostapp.com/test.php";
 
