@@ -1,16 +1,16 @@
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 // import DropDownPicker from "react-native-dropdown-picker";
-import SignUp from "./SignUp";
+import SignUp from "./src/components/SignUp";
 import { useState } from "react";
-import Login from "./Login";
-import Home from "./Home";
+import Login from "./src/components/Login";
+import Home from "./src/components/Home";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import AddNotes from "./AddNotes";
+import AddNotes from "./src/components/AddNotes";
 const Stack = createNativeStackNavigator();
 export default function App() {
   return (

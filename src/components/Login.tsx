@@ -14,6 +14,7 @@ import {
   Alert,
   Pressable,
 } from "react-native";
+import image from './../assets/images/login.png';
 
 function Login({ navigation }) {
   const [contact, setContact] = React.useState("");
@@ -82,7 +83,7 @@ function Login({ navigation }) {
         <View style={style.container}>
           <Image
             style={style.image}
-            source={require("./assets/images/login.png")}
+            source={image}
           />
           <View style={style.contentContainer}>
             <View style={style.headerContainer}>

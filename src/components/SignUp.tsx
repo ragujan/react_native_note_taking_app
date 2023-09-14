@@ -15,7 +15,7 @@ import {
   Alert,
   Pressable,
 } from "react-native";
-
+import image from './../assets/images/login.png';
 const SignUp = ({navigation}) => {
   const [selected, setSelected] = React.useState("");
   const [contact, setContact] = React.useState("");
@@ -98,7 +98,7 @@ const SignUp = ({navigation}) => {
           <View style={style.container}>
             <Image
               style={imageHiddenStatus ? style.image : style.image}
-              source={require("./assets/images/login.png")}
+              source={image}
             />
             <View
               style={imageHiddenStatus ? style.topped : style.contentContainer}
