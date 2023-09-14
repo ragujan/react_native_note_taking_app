@@ -16,7 +16,17 @@ import {
   Pressable,
 } from "react-native";
 import image from './../assets/images/login.png';
-const SignUp = ({navigation}) => {
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+type RootStackParamList = {
+
+  Login:undefined,
+  SignUp:undefined
+};
+
+type Props = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
+
+
+const SignUp = ({navigation}:Props) => {
   const [selected, setSelected] = React.useState("");
   const [contact, setContact] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
@@ -166,7 +176,7 @@ const SignUp = ({navigation}) => {
                   <Text style={style.textLabel}>User Type</Text>
                   <View>
                     <SelectList
-                      setSelected={(key) => setUserType(key)}
+                      setSelected={(key:string) => setUserType(key)}
                       data={data}
                       save="value"
                       boxStyles={style.dropDown}

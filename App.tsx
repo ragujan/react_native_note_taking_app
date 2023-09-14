@@ -11,7 +11,15 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import AddNotes from "./src/components/AddNotes";
-const Stack = createNativeStackNavigator();
+
+type RootStackParamList = {
+ 
+  AddNotes: { contact: string };
+  Home:{contact:string,fname:string,lname:string};
+  Login:undefined
+  SignUp:undefined
+};
+const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function App() {
   return (
 

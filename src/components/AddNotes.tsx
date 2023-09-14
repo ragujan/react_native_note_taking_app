@@ -16,7 +16,18 @@ import {
   Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const AddNotes = ({ navigation, route }) => {
+
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+type RootStackParamList = {
+ 
+  AddNotes: { contact: string };
+  
+};
+
+type Props = NativeStackScreenProps<RootStackParamList, 'AddNotes'>;
+
+const AddNotes = ({ navigation, route }:Props) => {
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [category, setCategory] = React.useState("");

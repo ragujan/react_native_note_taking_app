@@ -18,9 +18,22 @@ import {
 } from "react-native";
 import AddNotes from "./AddNotes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+type RootStackParamList = {
+ 
+  AddNotes: { contact: string };
+  Home:{contact:string,fname:string,lname:string};
+  Login:undefined
+};
+
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+
+
+
 type ItemProps = { title: string; description: string; category: string };
 
-function Home({ navigation, route }) {
+function Home({ navigation, route }:Props) {
   const [notes, setNotes] = React.useState([]);
 
   const [count, setCount] = React.useState(20);
@@ -55,12 +68,12 @@ function Home({ navigation, route }) {
   }
   const getExistingNotes = async () => {
     let noteFoundStatus = false;
-    let existingNotes = await AsyncStorage.getItem("my-notes");
+    let existingNotes:string | null= await AsyncStorage.getItem("my-notes");
     console.log("existing notes ", existingNotes);
-    let userNotes = [];
+    let userNotes:[] = [];
 
     const contact = route.params.contact;
-    let notes = JSON.parse(existingNotes);
+    let notes:[] = existingNotes=== null?[]:JSON.parse(existingNotes);
     if (!notes) {
       console.log("all notes are empty ", notes);
     } else {
@@ -76,10 +89,10 @@ function Home({ navigation, route }) {
     return userNotes;
   };
   const clearNotes = async () => {
-    let existingNotes = await AsyncStorage.getItem("my-notes");
+    let existingNotes:string|null = await AsyncStorage.getItem("my-notes");
     console.log("existing notes ", existingNotes);
     const contact = route.params.contact;
-    let notes = JSON.parse(existingNotes);
+    let notes:[] = existingNotes === null ? []:JSON.parse(existingNotes);
     if (!notes) {
       console.log("all notes are empty ", notes);
     } else {
@@ -97,7 +110,7 @@ function Home({ navigation, route }) {
 
     console.log(
       "after removed ",
-      await JSON.parse(await AsyncStorage.getItem("my-notes"))
+      JSON.parse(await AsyncStorage.getItem("my-notes") || "" )
     );
     await AsyncStorage.setItem("my-notes", JSON.stringify(notes));
     // await AsyncStorage.setItem("my-notes", "");
@@ -105,8 +118,7 @@ function Home({ navigation, route }) {
   const createObject = () => {
     return {
       contact: route.params.contact,
-      fname: route.params.fname,
-      lname: route.params.lname,
+
     };
   };
   const goToAddNotes = () => {
@@ -170,7 +182,7 @@ function Home({ navigation, route }) {
         <FlatList
           style={style.flatList}
           data={notes}
-          renderItem={({ item }) => (
+          renderItem={({ item }:any) => (
             <NoteItems
               title={item.title}
               description={item.description}

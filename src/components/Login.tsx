@@ -15,8 +15,17 @@ import {
   Pressable,
 } from "react-native";
 import image from './../assets/images/login.png';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+type RootStackParamList = {
+ 
+  AddNotes: { contact: string };
+  Home:{contact:string,fname:string,lname:string};
+  Login:undefined,
+  SignUp:undefined
+};
 
-function Login({ navigation }) {
+type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
+function Login({ navigation }:Props) {
   const [contact, setContact] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [imageHiddenStatus, setImageHiddenStatus] = useState(false);
