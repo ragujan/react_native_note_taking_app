@@ -36,70 +36,67 @@ const AddNotes = ({ navigation, route }) => {
     { key: "2", value: "Work" },
     { key: "3", value: "Travel" },
     { key: "4", value: "Law" },
+    { key: "5", value: "Sports" },
   ];
 
-  const defaultSelection = {
-    key: "1",
-    value: "Study",
-  };
+  // const defaultSelection = {
+  //   key: "1",
+  //   value: "Study",
+  // };
   const clearSelection = () => {
     setResetSelection(1);
   };
 
-  const addNote = async () => {
-    // await AsyncStorage.setItem("my-notes", "");
-    const contact = route.params.contact;
-    let contactFound = false;
 
-    if (title === "" || description === "") {
+
+  const addNote = async () => {
+    if (title === "" || description === "" || category === "") {
       return;
     }
+    let noteFoundStatus = false;
+    // await AsyncStorage.setItem("my-notes", "");
+    let existingNotes = await getExistingNotes();
+    console.log("existing notes ", existingNotes);
+    // console.log("existing notes length ",existingNotes.length)
 
     const myNote = {
       title: title,
       description: description,
       category: category,
     };
-
-    try {
-      let existingNotes = await getExistingNotes();
-      // return;
-      let updatedNotes = [...existingNotes];
-
-      const user = {
-        contact: route.params.contact,
-      };
-      console.log("updated notes are ", updatedNotes);
-
-      if (existingNotes[0] === undefined) {
-        console.log("empty notes");
-        updatedNotes.push(contact);
-      } else {
-        console.log("update note length ",updatedNotes.length)
-        let contactObj = null;
-
-        for (let i = 0; i < updatedNotes.length; i++) {
-          if (contact in updatedNotes[i]) {
-            contactFound = true;
-            console.log("contact is found");
-          }
-        }
+    const contact = route.params.contact;
+    let notes = existingNotes;
+    // console.log(notes);
+    for (let i = 0; i < notes.length; i++) {
+      // console.log(notes[i]["email"]);
+      const individualNote = notes[i];
+      console.log("individual note ,", individualNote);
+      if (individualNote["contact"] === contact) {
+        console.log("contact found");
+        individualNote["notes"].push(myNote);
+        noteFoundStatus = true;
+        break;
       }
-
-      return;
-      console.log("updated notes are ", updatedNotes);
-      await AsyncStorage.setItem("my-notes", JSON.stringify(updatedNotes));
-      // await AsyncStorage.setItem("my-notes", "");
-      existingNotes = await getExistingNotes();
-
-      setDescription("");
-      setTitle("");
-      setResetSelection(resetSelection + 1);
-    } catch (error) {
-      Alert.alert("Couldn't enter notes");
     }
+    if (!noteFoundStatus) {
+      const newNote = {
+        contact: contact,
+        notes: [
+          {
+            title: title,
+            description: description,
+            category: category,
+          },
+        ],
+      };
+      notes = [...notes, newNote];
+    }
+    await AsyncStorage.setItem("my-notes", JSON.stringify(notes));
+    setDescription("");
+    setTitle("");
+    setResetSelection(resetSelection + 1);
+    // console.log("newly updated notes ", await getExistingNotes());
   };
-
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       setTitle("");
@@ -156,7 +153,7 @@ const AddNotes = ({ navigation, route }) => {
                     save="value"
                     boxStyles={style.dropDown}
                     inputStyles={style.dropDownText}
-                    defaultOption={defaultSelection}
+                    // defaultOption={defaultSelection}
                     key={resetSelection}
                   />
                 </View>

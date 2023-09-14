@@ -20,18 +20,6 @@ import AddNotes from "./AddNotes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 type ItemProps = { title: string; description: string; category: string };
 
-const NoteItems = ({ title, description, category }: ItemProps) => (
-  <View style={style.listContainer}>
-    <View style={style.titleCategory}>
-      <Text style={style.title}>{title}</Text>
-      <Text style={style.category}>{category}</Text>
-    </View>
-    <View style={style.descriptionContainer}>
-      <Text style={{ fontSize: 15 }}>{description}</Text>
-    </View>
-  </View>
-);
-
 function Home({ navigation, route }) {
   const [notes, setNotes] = React.useState([]);
 
@@ -40,28 +28,6 @@ function Home({ navigation, route }) {
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
       await viewNotes();
-      const existingNotes = await getAllData();
-      if (existingNotes.length != 0) {
-        // const lastUserContact =
-        //   existingNotes[existingNotes.length - 1]["contact"];
-        // if (lastUserContact != route.params.contact) {
-        //   await AsyncStorage.setItem(
-        //     "my-notes",
-        //     `{'contact':${route.params.contact}}`
-        //   );
-        // }
-      } else {
-        console.log("length is  zero");
-      }
-      //   console.log(
-      //     "last user contact is from last from effect loaded",
-      //     lastUserContact["contact"]
-      //   );
-      //   console.log("route params is ", route.params.contact);
-      //   if (lastUserContact["contact"] != route.params.contact) {
-      //     await AsyncStorage.setItem("my-notes", `{'contact':${route.params.contact}}`);
-      //   }
-      //   await viewNotes();
     });
     return unsubscribe;
   }, [navigation]);
@@ -77,48 +43,65 @@ function Home({ navigation, route }) {
   }, []);
 
   const viewNotes = async () => {
-    return;
     let existingNotes = await getExistingNotes();
-    if (existingNotes === null) {
-      //   console.log("nothing to show");
-    } else {
-      //   console.log("existing notes are ", existingNotes);
+    if (existingNotes) {
       setNotes(existingNotes);
+    } else {
+      setNotes([]);
     }
-    // return await getExistingNotes();
   };
-  const getAllData = async () => {
-    const notes = await AsyncStorage.getItem("my-notes");
-
-    // console.log("notes are ", notes);
-
-    let jsonNote = JSON.parse(notes);
-    if (notes != null) {
-      //   jsonNote.pop();
-      //   const lastItem = jsonNote[jsonNote.length - 1];
-      //   console.log("last item is of json ", lastItem);
-      //   jsonNote.pop();
-    }
-    // console.log("jsonnote is ", jsonNote);
-    return notes ? jsonNote : [];
-  };
+  const logOut = ()=>{
+    navigation.navigate("Login");
+  }
   const getExistingNotes = async () => {
-    const notes = await AsyncStorage.getItem("my-notes");
+    let noteFoundStatus = false;
+    let existingNotes = await AsyncStorage.getItem("my-notes");
+    console.log("existing notes ", existingNotes);
+    let userNotes = [];
 
-    // console.log("notes are ", notes);
-
-    let jsonNote = JSON.parse(notes);
-    if (notes != null) {
-      jsonNote.pop();
-      //   const lastItem = jsonNote[jsonNote.length - 1];
-      //   console.log("last item is of json ", lastItem);
-      //   jsonNote.pop();
+    const contact = route.params.contact;
+    let notes = JSON.parse(existingNotes);
+    if (!notes) {
+      console.log("all notes are empty ", notes);
+    } else {
+      for (let i = 0; i < notes.length; i++) {
+        const individualNote = notes[i];
+        if (individualNote["contact"] === contact) {
+          userNotes = individualNote["notes"];
+          noteFoundStatus = true;
+          break;
+        }
+      }
     }
-    // console.log("jsonnote is ", jsonNote);
-    return notes ? jsonNote : [];
-    // return notes ? JSON.parse(notes) : [];
+    return userNotes;
   };
+  const clearNotes = async () => {
+    let existingNotes = await AsyncStorage.getItem("my-notes");
+    console.log("existing notes ", existingNotes);
+    const contact = route.params.contact;
+    let notes = JSON.parse(existingNotes);
+    if (!notes) {
+      console.log("all notes are empty ", notes);
+    } else {
+      for (let i = 0; i < notes.length; i++) {
+        const individualNote = notes[i];
+        if (individualNote["contact"] === contact) {
+          console.log("existing notes are before ", individualNote["notes"]);
+          notes.splice(i, 1);
+          i--;
+          // individualNote["notes"] = [];
+          break;
+        }
+      }
+    }
 
+    console.log(
+      "after removed ",
+      await JSON.parse(await AsyncStorage.getItem("my-notes"))
+    );
+    await AsyncStorage.setItem("my-notes", JSON.stringify(notes));
+    // await AsyncStorage.setItem("my-notes", "");
+  };
   const createObject = () => {
     return {
       contact: route.params.contact,
@@ -145,41 +128,41 @@ function Home({ navigation, route }) {
               {route.params.contact}
             </Text>
           </View>
-          <View style={style.addNoteButtonContainer}>
-            <Pressable
-              style={style.addNoteButton}
-              onPress={() => {
-                goToAddNotes();
-              }}
-            >
-              <Text style={style.btnText}>Add Notes</Text>
-            </Pressable>
-          </View>
+          <View style={style.buttonContainer}>
+            <View style={style.addNoteButtonContainer}>
+              <Pressable
+                style={style.addNoteButton}
+                onPress={() => {
+                  goToAddNotes();
+                }}
+              >
+                <Text style={style.btnText}>Add Notes</Text>
+              </Pressable>
+            </View>
 
-          <View style={style.addNoteButtonContainer}>
-            <Pressable
-              style={style.addNoteButton}
-              onPress={() => {
-                viewNotes();
-              }}
-            >
-              <Text style={style.btnText}>View Notes</Text>
-            </Pressable>
+            <View style={style.addNoteButtonContainer}>
+              <Pressable
+                style={style.addNoteButton}
+                onPress={async () => {
+                  await clearNotes();
+                  await viewNotes();
+                }}
+              >
+                <Text style={style.btnText}>Clear Notes</Text>
+              </Pressable>
+            </View>
           </View>
-          <View style={style.addNoteButtonContainer}>
-            <Pressable
-              style={style.addNoteButton}
-              onPress={async () => {
-                await AsyncStorage.setItem("my-notes", "");
-                await viewNotes();
-              }}
-            >
-              <Text style={style.btnText}>Clear Notes</Text>
+          <View style={{paddingTop:20}}>
+            <Pressable onPress={()=>{logOut()}}>
+              <Text style={{fontSize:15,fontWeight:"500",color:"blue",textDecorationLine:"underline"}}>Log Out</Text>
             </Pressable>
           </View>
         </View>
       </>
     );
+  };
+  const getFooter = () => {
+    return <View style={style.footer}></View>;
   };
   return (
     <>
@@ -195,6 +178,7 @@ function Home({ navigation, route }) {
             />
           )}
           ListHeaderComponent={getHeader}
+          ListFooterComponent={getFooter}
         />
       </SafeAreaView>
     </>
@@ -202,6 +186,20 @@ function Home({ navigation, route }) {
 }
 
 export default Home;
+const NoteItems = ({ title, description, category }: ItemProps) => (
+  <View style={style.listContainer}>
+    <View style={style.listContainerInner}>
+      <View style={style.titleCategory}>
+        <Text style={style.title}>Title: {title}</Text>
+        <Text style={style.category}>Category: {category}</Text>
+      </View>
+      <View style={style.descriptionContainer}>
+        <Text style={{ fontSize: 15 }}>{description}</Text>
+      </View>
+    </View>
+  </View>
+);
+
 const style = StyleSheet.create({
   container: {
     flex: 1,
@@ -209,13 +207,13 @@ const style = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
-    paddingBottom: 30,
+    paddingBottom: 15,
 
     // backgroundColor:"green"
   },
   flatList: {
     width: "100%",
-    // backgroundColor:"yellow",
+    paddingBottom: 200,
   },
   headerContainer: {
     paddingTop: 15,
@@ -237,15 +235,23 @@ const style = StyleSheet.create({
   fName: {
     marginRight: 10,
   },
+  buttonContainer:{
+     display: "flex",
+    flexDirection: "row",
+    marginHorizontal:"auto",
+    justifyContent:"space-between",
+    width: 270 
+  },
   addNoteButtonContainer: {
-    paddingTop: 25,
+    paddingTop: 6,
+    
   },
   addNoteButton: {
     backgroundColor: "#24a0ed",
     marginTop: 12,
-    paddingVertical: 10,
+    paddingVertical: 8,
     borderRadius: 8,
-    width: 250,
+    width: 125,
     color: "white",
   },
   btnText: {
@@ -258,12 +264,25 @@ const style = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    // backgroundColor:"red",
     alignItems: "center",
+
+    // paddingBottom:30
+  },
+  listContainerInner: {
+    width: "80%",
+    backgroundColor: "#e0e0e0",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 8,
+    paddingBottom: 16,
+    marginVertical: 5,
+    borderRadius: 8,
   },
   titleCategory: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "flex-start",
     // backgroundColor:"pink",
     width: 300,
@@ -271,19 +290,23 @@ const style = StyleSheet.create({
     paddingVertical: 4,
   },
   title: {
-    fontSize: 20,
-    fontWeight: "600",
+    fontSize: 18,
+    fontWeight: "300",
     marginRight: 20,
   },
   category: {
-    fontSize: 20,
-    fontWeight: "600",
+    fontSize: 18,
+    fontWeight: "300",
   },
   descriptionContainer: {
     width: 300,
-    backgroundColor: "#e2e2e2",
+    backgroundColor: "#c6c6c6",
     paddingVertical: 15,
     paddingLeft: 10,
     borderRadius: 4,
+    height: 100,
+  },
+  footer: {
+    paddingBottom: 30,
   },
 });

@@ -20,9 +20,15 @@ function Login({ navigation }) {
   const [password, setPassword] = React.useState("");
   const [imageHiddenStatus, setImageHiddenStatus] = useState(false);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", async () => {
+       setContact("")
+       setPassword("")
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   const doSignIn = () => {
-
-
     const ip = "192.168.56.1";
     let url = `http://${ip}:80/react_native_backend/login.php`;
 
